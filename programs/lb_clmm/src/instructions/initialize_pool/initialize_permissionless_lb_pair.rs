@@ -14,6 +14,10 @@ use std::cmp::{max, min};
 #[derive(Accounts)]
 #[instruction(active_id: i32, bin_step: u16)]
 pub struct InitializeLbPair<'info> {
+    #[account(constraint = token_mint_x.key() != token_mint_y.key())]
+    pub token_mint_x: Box<InterfaceAccount<'info, Mint>>,
+    pub token_mint_y: Box<InterfaceAccount<'info, Mint>>,
+
     #[account(
         init,
         seeds = [
@@ -39,10 +43,6 @@ pub struct InitializeLbPair<'info> {
         space = 8 + BinArrayBitmapExtension::INIT_SPACE
     )]
     pub bin_array_bitmap_extension: Option<AccountLoader<'info, BinArrayBitmapExtension>>,
-
-    #[account(constraint = token_mint_x.key() != token_mint_y.key())]
-    pub token_mint_x: Box<InterfaceAccount<'info, Mint>>,
-    pub token_mint_y: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
         init,
